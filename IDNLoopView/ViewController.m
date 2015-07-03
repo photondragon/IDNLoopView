@@ -15,6 +15,7 @@ IDNLoopViewDataSource>
 
 @property (weak, nonatomic) IBOutlet IDNLoopView *loopView;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *constraintOfBottom;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *constraintOfRight;
 @end
 
 @implementation ViewController
@@ -33,9 +34,15 @@ IDNLoopViewDataSource>
 
 - (IBAction)changeSize:(id)sender {
 	if(self.constraintOfBottom.constant>0)
+	{
 		self.constraintOfBottom.constant = 0;
+		self.constraintOfRight.constant = 0;
+	}
 	else
+	{
 		self.constraintOfBottom.constant = 160;
+		self.constraintOfRight.constant = 60;
+	}
 	[UIView animateWithDuration:0.2 animations:^{
 		[self.view layoutIfNeeded];
 	}];

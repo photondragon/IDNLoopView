@@ -47,6 +47,9 @@
 {
 	if(dicVisibleViews)
 		return;
+
+	self.clipsToBounds = YES;
+	
 	dicVisibleViews = [NSMutableDictionary new];
 	reuseViews = [NSMutableArray new];
 	unitSize = self.bounds.size;

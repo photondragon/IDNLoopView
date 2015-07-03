@@ -43,7 +43,8 @@
                     </navigationItem>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
                     <connections>
-                        <outlet property="constraintOfBottom" destination="4Ei-dK-L2D" id="RpZ-o3-0HH"/>
+                        <outlet property="constraintOfBottom" destination="4Ei-dK-L2D" id="Vzg-d4-weL"/>
+                        <outlet property="constraintOfRight" destination="geo-Xe-aS6" id="qdn-rj-04e"/>
                         <outlet property="loopView" destination="NSw-bG-GUu" id="tVo-PM-tLG"/>
                     </connections>
                 </viewController>
