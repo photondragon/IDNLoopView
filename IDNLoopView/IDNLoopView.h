@@ -23,7 +23,17 @@
 @protocol IDNLoopViewDataSource;
 @protocol IDNLoopViewDelegate;
 
-/** 循环显示视图
+/** 图片/视图循环播放控件
+
+ 地址：https://github.com/photondragon/IDNLoopView
+
+ 这个控件有如下特点：
+
+ 1. 可实现图片或视图的无限循环播放
+ 2. 支持任意类型视图，包括但不限于UIImageView
+ 3. 支持运行时动态改变IDNLoopView控件的大小
+ 4. 使用方法类似UITableView，没有学习成本
+
  用法类似于UITableView，设置好datasource和delegate就行了。
  */
 @interface IDNLoopView : UIView
