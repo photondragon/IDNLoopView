@@ -97,8 +97,18 @@
 	if(numberOfViews<=0)
 		return;
 
-	unitSize = self.bounds.size;
-	self.contentOffset = [self offsetFromIndex:_currentIndex];
+	CGSize newUnitSize = self.bounds.size;
+	CGFloat ratioW, ratioH;
+	if(unitSize.width<=0)
+		ratioW = 1.0;
+	else
+		ratioW = newUnitSize.width/unitSize.width;
+	if(unitSize.height<=0)
+		ratioH = 1.0;
+	else
+		ratioH = newUnitSize.height/unitSize.height;
+	unitSize = newUnitSize;
+	self.contentOffset = CGPointMake(_contentOffset.x*ratioW, _contentOffset.y*ratioH);
 	translateOfPan = CGPointZero;
 	[panGestureRecognizer setTranslation:translateOfPan inView:self];
 	[self layoutVisibleViews];

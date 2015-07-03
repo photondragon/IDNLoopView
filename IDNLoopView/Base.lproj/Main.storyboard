@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="vXZ-lx-hvc">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="arE-dw-leY">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--IDNLoopView-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
                 <viewController id="vXZ-lx-hvc" customClass="ViewController" sceneMemberID="viewController">
@@ -21,7 +21,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="NSw-bG-GUu" secondAttribute="bottom" id="4Ei-dK-L2D"/>
                             <constraint firstItem="NSw-bG-GUu" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="EUN-CN-JZu"/>
@@ -29,13 +29,43 @@
                             <constraint firstAttribute="trailing" secondItem="NSw-bG-GUu" secondAttribute="trailing" id="geo-Xe-aS6"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" title="IDNLoopView" id="zcO-ut-0hE">
+                        <barButtonItem key="leftBarButtonItem" title="改变尺寸" id="Non-pG-Cgo">
+                            <connections>
+                                <action selector="changeSize:" destination="vXZ-lx-hvc" id="Wkp-LO-x8F"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="重新加载" id="3pU-pN-3mu">
+                            <connections>
+                                <action selector="reload:" destination="vXZ-lx-hvc" id="01o-Qd-CYh"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
                     <connections>
+                        <outlet property="constraintOfBottom" destination="4Ei-dK-L2D" id="RpZ-o3-0HH"/>
                         <outlet property="loopView" destination="NSw-bG-GUu" id="tVo-PM-tLG"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="4Pi-t6-GsQ">
+            <objects>
+                <navigationController id="arE-dw-leY" sceneMemberID="viewController">
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="dFi-kc-7Kk">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="vXZ-lx-hvc" kind="relationship" relationship="rootViewController" id="aVl-sY-9CN"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Buz-UW-vqc" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-84" y="268"/>
         </scene>
     </scenes>
 </document>

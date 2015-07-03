@@ -14,17 +14,43 @@
 IDNLoopViewDataSource>
 
 @property (weak, nonatomic) IBOutlet IDNLoopView *loopView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *constraintOfBottom;
 @end
 
 @implementation ViewController
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
+	self.edgesForExtendedLayout = 0;
+
 	self.loopView.datasource = self;
 	self.loopView.delegate = self;
-//	self.loopView.intervalTime = 0;
+//	self.loopView.reuseDisabled = YES; //关闭view回收机制
+//	self.loopView.pageControl.hidden = YES; //隐藏内置的UIPageControl
+//	self.loopView.intervalTime = 0; //关闭自动切换
 //	self.loopView.currentIndex = 2;
 }
+
+- (IBAction)changeSize:(id)sender {
+	if(self.constraintOfBottom.constant>0)
+		self.constraintOfBottom.constant = 0;
+	else
+		self.constraintOfBottom.constant = 160;
+	[UIView animateWithDuration:0.2 animations:^{
+		[self.view layoutIfNeeded];
+	}];
+}
+- (IBAction)autoSwitch:(id)sender {
+	if(self.loopView.intervalTime>0)
+		self.loopView.intervalTime = 0;
+	else
+		self.loopView.intervalTime = 5.0;
+}
+- (IBAction)reload:(id)sender {
+	[self.loopView reloadViews];
+}
+
+#pragma mark IDNLoopView DataSource & Delegate
 
 - (NSInteger)numberOfViewsInLoopView:(IDNLoopView *)loopView
 {
@@ -50,4 +76,5 @@ IDNLoopViewDataSource>
 {
 	NSLog(@"tap index = %d", (int)index);
 }
+
 @end
