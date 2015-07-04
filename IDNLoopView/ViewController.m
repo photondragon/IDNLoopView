@@ -22,7 +22,8 @@ IDNLoopViewDataSource>
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
-	self.edgesForExtendedLayout = 0;
+	if([self respondsToSelector:@selector(setEdgesForExtendedLayout:)])
+		self.edgesForExtendedLayout = 0;
 
 	self.loopView.delegate = self;
 	self.loopView.datasource = self;

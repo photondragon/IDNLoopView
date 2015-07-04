@@ -112,7 +112,8 @@
 	unitSize = newUnitSize;
 	self.contentOffset = CGPointMake(_contentOffset.x*ratioW, _contentOffset.y*ratioH);
 	translateOfPan = CGPointZero;
-	[panGestureRecognizer setTranslation:translateOfPan inView:self];
+	if(panGestureRecognizer.state != UIGestureRecognizerStatePossible)
+		[panGestureRecognizer setTranslation:translateOfPan inView:self];
 	[self layoutVisibleViews];
 }
 
