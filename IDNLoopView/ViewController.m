@@ -24,8 +24,8 @@ IDNLoopViewDataSource>
 	[super viewDidLoad];
 	self.edgesForExtendedLayout = 0;
 
-	self.loopView.datasource = self;
 	self.loopView.delegate = self;
+	self.loopView.datasource = self;
 //	self.loopView.reuseDisabled = YES; //关闭view回收机制
 //	self.loopView.pageControl.hidden = YES; //隐藏内置的UIPageControl
 //	self.loopView.intervalTime = 0; //关闭自动切换
@@ -82,6 +82,11 @@ IDNLoopViewDataSource>
 - (void)loopView:(IDNLoopView *)loopView didTapViewAtIndex:(NSInteger)index
 {
 	NSLog(@"tap index = %d", (int)index);
+}
+
+- (void)loopView:(IDNLoopView *)loopView didShowViewAtIndex:(NSInteger)index
+{
+	NSLog(@"current index = %d", (int)index);
 }
 
 @end

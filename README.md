@@ -67,6 +67,11 @@ IDNLoopViewDataSource>
 	NSLog(@"tap index = %d", (int)index);
 }
 
+- (void)loopView:(IDNLoopView *)loopView didShowViewAtIndex:(NSInteger)index
+{
+	NSLog(@"current index = %d", (int)index);
+}
+
 @end
 ```
 

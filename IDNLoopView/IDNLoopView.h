@@ -41,15 +41,14 @@
 @property(nonatomic,weak) id<IDNLoopViewDataSource> datasource;
 @property(nonatomic,weak) id<IDNLoopViewDelegate> delegate;
 
-@property(nonatomic) NSInteger currentIndex; ///< 当前View的Index
-
-@property(nonatomic) NSTimeInterval intervalTime; ///< 自动切换图片间隔时间，默认5秒，0表示不自动切换
-
-@property(nonatomic) BOOL reuseDisabled; //是否禁用view的回收机制（类似UITableViewCell的回收机制），默认NO。
-
-@property(nonatomic,strong,readonly) UIPageControl *pageControl; //内置的UIPageControll，你可以设置其颜色或者隐藏它
+@property(nonatomic) NSInteger currentIndex; ///< 当前显示的View的Index
+- (void)setCurrentIndex:(NSInteger)currentIndex animated:(BOOL)animated;
 
 - (void)reloadViews;
+
+@property(nonatomic) NSTimeInterval intervalTime; ///< 自动切换图片间隔时间，默认5秒，0表示不自动切换
+@property(nonatomic) BOOL reuseDisabled; ///< 是否禁用view的回收机制（类似UITableViewCell的回收机制），默认NO。
+@property(nonatomic,strong,readonly) UIPageControl *pageControl; ///< 内置的UIPageControll，你可以设置其颜色或者隐藏它
 
 @end
 
@@ -64,9 +63,15 @@
 
 @optional
 /**
- 当用户tap当前View时触发。
+ 当用户tap当前View时被调用。
  @param index 当前view的index
  */
 - (void)loopView:(IDNLoopView*)loopView didTapViewAtIndex:(NSInteger)index;
+
+/**
+ 当currentIndex因触摸（或自动切换）改变时被调用，在设置dataSource或者reloadViews时也会被调用
+ @param index 当前view的index
+ */
+- (void)loopView:(IDNLoopView*)loopView didShowViewAtIndex:(NSInteger)index;
 
 @end

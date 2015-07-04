@@ -26,6 +26,7 @@
 
 @property(nonatomic) CGPoint contentOffset; //contentOffset实时改变时，只会影响contentView的位置。不会影响unitViews。
 @property(nonatomic) BOOL autoSwitch;
+@property(nonatomic) NSInteger showIndex; //基本同currentIndex，区别在于showIndex可能会超出[0, numberOfViews)的范围，做取模运算后等于currentIndex
 
 @end
 
@@ -40,8 +41,6 @@
 	UIPanGestureRecognizer* panGestureRecognizer;
 	CGPoint translateOfPan; //Pan操作的上一次translate
 }
-
-@synthesize currentIndex=_currentIndex;
 
 - (void)initializer
 {
@@ -140,17 +139,13 @@
 			CGPoint velocity = [panGestureRecognizer velocityInView:self];
 			NSInteger newIndex;
 			if(velocity.x>MinSwipeVelocity)
-				newIndex = _currentIndex-1;
+				newIndex = _showIndex-1;
 			else if(velocity.x<-MinSwipeVelocity)
-				newIndex = _currentIndex+1;
+				newIndex = _showIndex+1;
 			else
 				newIndex = [self indexFromOffset:_contentOffset];
 
-			__weak IDNLoopView* wself = self;
-			[self setCurrentIndex:newIndex animated:YES animateCompletion:^(BOOL finished) {
-				IDNLoopView* sself = wself;
-				[sself correctCurrentIndex]; //滚动动画结束后，校正_currentIndex到[0, numberOfViews)范围内
-			}];
+			[self setShowIndex:newIndex animated:YES];
 
 			if(_intervalTime>0 && numberOfViews>1)
 				self.autoSwitch = YES;
@@ -158,7 +153,7 @@
 		}
 		case UIGestureRecognizerStateCancelled:
 			translateOfPan = CGPointZero;
-			[self setCurrentIndex:_currentIndex animated:NO animateCompletion:nil];
+			self.contentOffset = [self offsetFromIndex:_showIndex]; //恢复到showIndex对应的offset，相当于什么也没改变。
 
 			if(_intervalTime>0 && numberOfViews>1)
 				self.autoSwitch = YES;
@@ -176,7 +171,7 @@
 	if(numberOfViews==0)
 		return -1;
 	// _currentIndex可能会超出[0, numberOfViews)的范围，所以下面要校正到正常范围内
-	NSInteger currentIndex = _currentIndex;
+	NSInteger currentIndex = _showIndex;
 	if(currentIndex<0)
 	{
 		do {
@@ -194,23 +189,46 @@
 
 - (void)setCurrentIndex:(NSInteger)currentIndex
 {
-	if(numberOfViews==0)
-		return;
-	if(_currentIndex==currentIndex)
-		return;
-	if(currentIndex<0 || currentIndex>=numberOfViews)
-		return;
-	[self setCurrentIndex:currentIndex animated:NO animateCompletion:nil];
+	[self setCurrentIndex:currentIndex animated:NO];
 }
-- (void)setCurrentIndex:(NSInteger)currentIndex animated:(BOOL)animated animateCompletion:(void (^)(BOOL finished))animateCompletion
+- (void)setCurrentIndex:(NSInteger)currentIndex animated:(BOOL)animated
 {
 	if(numberOfViews==0)
 		return;
-	_currentIndex = currentIndex;
-	[self setContentOffset:[self offsetFromIndex:currentIndex] animated:animated animateCompletion:animateCompletion];
+	if(self.currentIndex==currentIndex)
+		return;
+	if(currentIndex<0 || currentIndex>=numberOfViews)
+		return;
+	[self setShowIndex:currentIndex animated:animated];
+}
+
+- (void)setShowIndex:(NSInteger)showIndex
+{
+	// 这个方法不起任何作用。
+}
+- (void)setShowIndex:(NSInteger)showIndex animated:(BOOL)animated
+{
+	if(numberOfViews==0)
+		return;
+	NSInteger oldIndex = self.currentIndex;
+
+	_showIndex = showIndex; //_showIndex与showIndex即使相等也不return，因为有可能showIndex没改变，但contentOffset改变了，此时相当于将contentOffset恢复到showIndex对应的位置上。
+
+	__weak IDNLoopView* wself = self;
+	[self setContentOffset:[self offsetFromIndex:showIndex] animated:animated animateCompletion:^(BOOL finished) {
+		IDNLoopView* sself = wself;
+		[sself correctShowIndex]; //滚动动画结束后，校正_currentIndex到[0, numberOfViews)范围内
+	}];
 	[self loadVisibleViews];
 	[self layoutVisibleViews];
-	_pageControl.currentPage = self.currentIndex;
+
+	NSInteger newIndex = self.currentIndex;
+	if(newIndex!=oldIndex)
+	{
+		_pageControl.currentPage = newIndex;
+		if([_delegate respondsToSelector:@selector(loopView:didShowViewAtIndex:)])
+			[_delegate loopView:self didShowViewAtIndex:newIndex];
+	}
 }
 
 - (void)moveContent:(CGPoint)deltaTouch
@@ -293,23 +311,24 @@
 }
 
 // 将currentIndex校正到[0, numberOfViews)之间
-- (void)correctCurrentIndex
+- (void)correctShowIndex
 {
 	NSInteger delta = 0;
-	// 校正currentIndex到正常范围内
-	if(_currentIndex<0)
+
+	// 校正showIndex到正常范围内[0, numberOfViews)
+	if(_showIndex<0)
 	{
 		do {
-			_currentIndex += numberOfViews;
+			_showIndex += numberOfViews;
 			delta += numberOfViews;
-		}while (_currentIndex<0);
+		}while (_showIndex<0);
 	}
-	else if(_currentIndex>=numberOfViews)
+	else if(_showIndex>=numberOfViews)
 	{
 		do {
-			_currentIndex -= numberOfViews;
+			_showIndex -= numberOfViews;
 			delta -= numberOfViews;
-		}while (_currentIndex<0);
+		}while (_showIndex>=numberOfViews);
 	}
 	if(delta!=0)
 	{
@@ -321,7 +340,7 @@
 			dicVisibleViews[newIndexNumber] = view;
 			[dicVisibleViews removeObjectForKey:oldIndexNumber];
 		}
-		self.contentOffset = [self offsetFromIndex:_currentIndex];
+		self.contentOffset = [self offsetFromIndex:_showIndex];
 		[self layoutVisibleViews];
 	}
 }
@@ -351,7 +370,7 @@
 	_pageControl.numberOfPages = numberOfViews;
 	_pageControl.currentPage = 0;
 
-	_currentIndex = 0;
+	_showIndex = 0;
 	_contentOffset = CGPointZero;
 	contentView.frame = CGRectMake(0, 0, unitSize.width*numberOfViews, unitSize.height);
 	[self loadVisibleViews];
@@ -360,6 +379,15 @@
 
 	self.autoSwitch = NO;
 	self.autoSwitch = YES;
+
+	if(numberOfViews>0)
+	{
+		//以异步方式通知，因为有可能用户是先设置datasource，后设置delegate，同步方式可能收不到通知。
+		dispatch_async(dispatch_get_main_queue(), ^{
+			if(numberOfViews>0 && [_delegate respondsToSelector:@selector(loopView:didShowViewAtIndex:)])
+				[_delegate loopView:self didShowViewAtIndex:0];
+		});
+	}
 }
 
 - (void)setReuseDisabled:(BOOL)reuseDisabled
@@ -425,11 +453,7 @@
 	if(numberOfViews<=1)
 		return;
 
-	__weak IDNLoopView* wself = self;
-	[self setCurrentIndex:_currentIndex+1 animated:YES animateCompletion:^(BOOL finished) {
-		IDNLoopView* sself = wself;
-		[sself correctCurrentIndex]; //滚动动画结束后，校正_currentIndex到[0, numberOfViews)范围内
-	}];
+	[self setShowIndex:_showIndex+1 animated:YES];
 	if(_intervalTime>0 && numberOfViews>1)
 		self.autoSwitch = YES;
 }
@@ -451,7 +475,7 @@
 {
 	if(numberOfViews==0)
 		return nil;
-	return @[@(_currentIndex-1),@(_currentIndex),@(_currentIndex+1)];
+	return @[@(_showIndex-1),@(_showIndex),@(_showIndex+1)];
 }
 
 - (void)layoutView:(UIView*)view index:(NSInteger)index
