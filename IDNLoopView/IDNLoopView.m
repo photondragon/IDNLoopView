@@ -248,12 +248,12 @@
 	_contentOffset = offset;
 	if(animated==NO)
 	{
-		contentView.frame = CGRectMake(-offset.x, 0, unitSize.width, unitSize.height);
+		contentView.frame = CGRectMake(-offset.x, 0, unitSize.width*numberOfViews, unitSize.height);
 	}
 	else
 	{
 		[UIView animateWithDuration:0.2 animations:^{
-			contentView.frame = CGRectMake(-offset.x, 0, unitSize.width, unitSize.height);
+			contentView.frame = CGRectMake(-offset.x, 0, unitSize.width*numberOfViews, unitSize.height);
 		} completion:animateCompletion];
 	}
 }
