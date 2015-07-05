@@ -381,14 +381,8 @@
 	self.autoSwitch = NO;
 	self.autoSwitch = YES;
 
-	if(numberOfViews>0)
-	{
-		//以异步方式通知，因为有可能用户是先设置datasource，后设置delegate，同步方式可能收不到通知。
-		dispatch_async(dispatch_get_main_queue(), ^{
-			if(numberOfViews>0 && [_delegate respondsToSelector:@selector(loopView:didShowViewAtIndex:)])
-				[_delegate loopView:self didShowViewAtIndex:0];
-		});
-	}
+	if(numberOfViews>0 && [_delegate respondsToSelector:@selector(loopView:didShowViewAtIndex:)])
+		[_delegate loopView:self didShowViewAtIndex:0];
 }
 
 - (void)setReuseDisabled:(BOOL)reuseDisabled
