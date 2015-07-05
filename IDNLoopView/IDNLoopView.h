@@ -42,7 +42,6 @@
 @property(nonatomic,weak) id<IDNLoopViewDelegate> delegate;
 
 @property(nonatomic) NSInteger currentIndex; ///< 当前显示的View的Index
-- (void)setCurrentIndex:(NSInteger)currentIndex animated:(BOOL)animated;
 
 - (void)reloadViews;
 
