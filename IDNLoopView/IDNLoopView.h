@@ -56,6 +56,13 @@
 - (NSInteger)numberOfViewsInLoopView:(IDNLoopView*)loopView; ///< 返回要显示的视图个数
 - (UIView*)loopView:(IDNLoopView*)loopView viewAtIndex:(NSInteger)index reuseView:(UIView*)view;
 
+@optional
+/**
+ 当view被移除(removeFromSuperview)后被调用，你可以在其中清理一些资源。
+ @param index 将要被移除的view的index
+ */
+- (void)loopView:(IDNLoopView*)loopView dismissView:(UIView*)view atIndex:(NSInteger)index;
+
 @end
 
 @protocol IDNLoopViewDelegate <NSObject>
@@ -72,5 +79,6 @@
  @param index 当前view的index
  */
 - (void)loopView:(IDNLoopView*)loopView didShowViewAtIndex:(NSInteger)index;
+
 
 @end

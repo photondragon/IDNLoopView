@@ -80,6 +80,13 @@ IDNLoopViewDataSource>
 	return imageView;
 }
 
+- (void)loopView:(IDNLoopView *)loopView dismissView:(UIView *)view atIndex:(NSInteger)index
+{
+	[(UIImageView*)view setImage:nil]; //清理资源
+	NSString* imgfile = [NSString stringWithFormat:@"抽象派艺术%03d.jpg", (int)index];
+	NSLog(@"%@ released", imgfile);
+}
+
 - (void)loopView:(IDNLoopView *)loopView didTapViewAtIndex:(NSInteger)index
 {
 	NSLog(@"tap index = %d", (int)index);

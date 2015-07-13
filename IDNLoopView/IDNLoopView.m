@@ -282,6 +282,13 @@
 		else if(isOld && isNew==NO) //之前可见，现在不可见
 		{
 			UIView* view = dicVisibleViews[indexNumber];
+			if([_datasource respondsToSelector:@selector(loopView:dismissView:atIndex:)])
+			{
+				NSInteger index = indexNumber.integerValue;
+				while (index<0) index += numberOfViews;
+				while (index>=numberOfViews) index -= numberOfViews;
+				[_datasource loopView:self dismissView:view atIndex:index];
+			}
 			[view removeFromSuperview];
 			if(_reuseDisabled==NO)
 				[reuseViews addObject:view];
@@ -356,8 +363,12 @@
 
 - (void)reloadViews
 {
+	NSInteger index = 0;
 	for (UIView* view in dicVisibleViews.allValues) {
+		if([_datasource respondsToSelector:@selector(loopView:dismissView:atIndex:)])
+			[_datasource loopView:self dismissView:view atIndex:index];
 		[view removeFromSuperview];
+		index++;
 	}
 	[dicVisibleViews removeAllObjects];
 	[reuseViews removeAllObjects];
