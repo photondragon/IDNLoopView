@@ -31,6 +31,8 @@ IDNLoopViewDataSource>
 //	self.loopView.pageControl.hidden = YES; //隐藏内置的UIPageControl
 //	self.loopView.intervalTime = 0; //关闭自动切换
 //	self.loopView.currentIndex = 2;
+
+//	self.loopView.datasource = nil;
 }
 
 - (IBAction)changeSize:(id)sender {
@@ -78,13 +80,6 @@ IDNLoopViewDataSource>
 	NSLog(@"%@", imgfile);
 	imageView.image = [UIImage imageNamed:imgfile];
 	return imageView;
-}
-
-- (void)loopView:(IDNLoopView *)loopView dismissView:(UIView *)view atIndex:(NSInteger)index
-{
-	[(UIImageView*)view setImage:nil]; //清理资源
-	NSString* imgfile = [NSString stringWithFormat:@"抽象派艺术%03d.jpg", (int)index];
-	NSLog(@"%@ released", imgfile);
 }
 
 - (void)loopView:(IDNLoopView *)loopView didTapViewAtIndex:(NSInteger)index

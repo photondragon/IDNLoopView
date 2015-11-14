@@ -41,27 +41,22 @@
 @property(nonatomic,weak) id<IDNLoopViewDataSource> datasource;
 @property(nonatomic,weak) id<IDNLoopViewDelegate> delegate;
 
-@property(nonatomic) NSInteger currentIndex; ///< 当前显示的View的Index
+@property(nonatomic) NSInteger currentIndex; ///< 当前显示的View的Index。如果numberOfViews==0，则currentIndex==NSNotFound
 
 - (void)reloadViews;
 
 @property(nonatomic) NSTimeInterval intervalTime; ///< 自动切换图片间隔时间，默认5秒，0表示不自动切换
 @property(nonatomic) BOOL reuseDisabled; ///< 是否禁用view的回收机制（类似UITableViewCell的回收机制），默认NO。
+
 @property(nonatomic,strong,readonly) UIPageControl *pageControl; ///< 内置的UIPageControll，你可以设置其颜色或者隐藏它
 
 @end
 
 @protocol IDNLoopViewDataSource <NSObject>
 
+@required
 - (NSInteger)numberOfViewsInLoopView:(IDNLoopView*)loopView; ///< 返回要显示的视图个数
 - (UIView*)loopView:(IDNLoopView*)loopView viewAtIndex:(NSInteger)index reuseView:(UIView*)view;
-
-@optional
-/**
- 当view被移除(removeFromSuperview)后被调用，你可以在其中清理一些资源。
- @param index 将要被移除的view的index
- */
-- (void)loopView:(IDNLoopView*)loopView dismissView:(UIView*)view atIndex:(NSInteger)index;
 
 @end
 
